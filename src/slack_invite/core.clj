@@ -1,7 +1,21 @@
 (ns slack-invite.core
-  (:gen-class))
+  (:require [bidi.bidi :as b]
+            [bidi.ring :refer (make-handler)]
+            [clj-slack.core :as slack]))
 
-(defn -main
-  "I don't do a whole lot ... yet."
-  [& args]
-  (println "Hello, World!"))
+(defn showForm
+  [request]
+  {:status 200
+   :headers {"Content-Type" "text/html"}
+   :body "<h1>Hello world!</h1>"})
+
+(defn handleForm
+  [request]
+)
+
+(def routes
+  ["/" {:get showForm
+        :post handleForm}])
+
+(def handler
+  (make-handler routes))
