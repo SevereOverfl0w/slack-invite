@@ -1,6 +1,8 @@
 # slack-invite
-
-FIXME: description
+Indev, run like so:
+```
+TEAM_NAME=Clojurians lein ring server 8008
+```
 
 ## Installation
 
