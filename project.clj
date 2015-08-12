@@ -8,7 +8,10 @@
                  [environ "1.0.0"]
                  [ring/ring-core "1.4.0"]
                  [ring/ring-jetty-adapter "1.4.0"]
-                 [bidi "1.20.3"]]
+                 [bidi "1.20.3"]
+                 [selmer "0.8.8"]]
   :main ^:skip-aot slack-invite.core
   :target-path "target/%s"
+  :ring {:handler slack-invite.core/handler
+         :nrepl {:start? true}}
   :profiles {:uberjar {:aot :all}})
