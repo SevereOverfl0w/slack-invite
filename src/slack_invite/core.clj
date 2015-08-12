@@ -1,7 +1,10 @@
 (ns slack-invite.core
   (:require [bidi.bidi :as b]
             [bidi.ring :refer (make-handler)]
+            [environ.core :refer [env]]
             [clj-slack.core :as slack]))
+
+(def slack-connection {:api-url (env :api-url) :token (env :api-token)})
 
 (defn showForm
   [request]
