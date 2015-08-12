@@ -1,29 +1,37 @@
 (ns slack-invite.core
-  (:require [bidi.bidi :as b]
-            [bidi.ring :refer (make-handler)]
+  (:require [bidi.ring :refer (make-handler)]
             [environ.core :refer [env]]
-            [clj-slack.core :as slack])
-  (:use [selmer.parser]))
+            [clj-slack.core :as slack]
+            [bouncer.core :as b]
+            [bouncer.validators :as v])
+  (:use [selmer.parser]
+        [ring.middleware.params]))
 
 (def slack-connection {:api-url (env :api-url) :token (env :api-token)})
 (def team-name (get env :team-name "Anonymous team"))
 
-(defn showForm
+(defn show-form
   [request]
   {:status 200
    :headers {"Content-Type" "text/html"}
    :body (render-file "templates/index.html" {})
    })
 
-(defn handleForm
+(defn handle-form
   [request]
-  {:status 200
-   :headers {"Content-Type" "text/html"}
-   :body "Gratz"})
+  (let [form-data (:form-params request)
+        validation (b/validate form-data
+                    "email" v/email)]
+      {:status 200
+       :headers {"Content-Type" "text/html"}
+       :body (if (nil? (first validation))
+               "Success!"
+               "Failed!")}))
 
 (def routes
-  ["/" {:get #'showForm
-        :post #'handleForm}])
+  ["/" {:get #'show-form
+        :post #'handle-form}])
 
 (def handler
-  (make-handler routes))
+  (-> (make-handler routes)
+      wrap-params))
